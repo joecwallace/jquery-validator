@@ -16,7 +16,7 @@ Now edit your ```application/bundles.php```:
 <?php
 
 return array(
-    ...
+    // Other bundles and whizbangs...
     'jquery-validator',
 );
 ```
@@ -29,13 +29,14 @@ php artisan bundle:publish
 
 ## Usage
 
-You can probably guess that **jquery-validator** depends on jQuery, so jQuery will have to be instantiated first.
+You can probably guess that **jquery-validator** depends on jQuery, so at some point, you'll do something like this:
+
+```
+{{ HTML::script('https://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js') }}
+{{ HTML::script('bundles/jquery-validator/validator.js') }}
+```
 
 ### HTML Markup
-
-Notice the ```data-validations``` attributes. They are just like the [Laravel validation rules](http://laravel.com/docs/validation#validation-rules).
-
-Handy. Right? This is a trivial example, but it should be enough to get you started.
 
 ```
 <form id="myForm" method="POST" action="submit.php">
@@ -48,6 +49,10 @@ Handy. Right? This is a trivial example, but it should be enough to get you star
   <input name="submit" type="submit" value="Submit" />
 </form>
 ```
+
+Notice the ```data-validations``` attributes. They are just like the [Laravel validation rules](http://laravel.com/docs/validation#validation-rules).
+
+Handy. Right? This is a trivial example, but it should be enough to get you started.
 
 ### JavaScript
 
@@ -121,7 +126,7 @@ $(document).ready(function() {
 });
 ```
 
-That's pretty much it.
+Nice. That's pretty much it. Please enjoy and let me know if you see any bad behavior.
 
 ## Known issues
 
