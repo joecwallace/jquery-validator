@@ -74,6 +74,22 @@ $(document).ready(function() {
 
 The callback provided is called for each input/select/textarea on which validation is attempted, so the ```elem``` in the callback above is the input/select/textarea that contains invalid data - not the parent form.
 
+Want the parent form instead? Use the 'done' callback instead of (or in addition to) the, um..., 'callback' callback.
+
+```
+$(document).ready(function() {
+    $('#myForm').validator({
+      events   : 'submit',
+      selector : 'input[type!=submit], select, textarea',
+      done     : function( valid ) {
+          if ( ! valid ) {
+              $( elem ).addClass('error');
+          }
+      }
+    });
+});
+```
+
 But the code above may be bad because the form submits even if the data is invalid. Let's stop the form submission:
 
 ```
