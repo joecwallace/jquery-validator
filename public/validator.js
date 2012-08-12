@@ -9,6 +9,9 @@
 		preventDefaultIfInvalid : false,
 		callback                : function( valid ) {
 			//
+		},
+		done                    : function( valid ) {
+			//
 		}
 	};
 
@@ -41,6 +44,8 @@
 					if ( ( ! valid && options.preventDefaultIfInvalid ) || options.preventDefault ) {
 						evt.preventDefault();
 					}
+
+					options.done( valid );
 
 				});
 
