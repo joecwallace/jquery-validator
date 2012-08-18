@@ -17,7 +17,9 @@ Now edit your ```application/bundles.php```:
 
 return array(
     // Other bundles and whizbangs...
-    'jquery-validator',
+    'jquery-validator' => array(
+        'auto' => true,
+    ),
 );
 ```
 
@@ -25,6 +27,20 @@ Next, you'll have to publish the bundle's assets:
 
 ```
 php artisan bundle:publish
+```
+
+### Optional: Enable Form class
+
+In ```application/config/application.php``` change the following line:
+
+```
+    'Form' => 'Laravel\\Form',
+```
+
+to
+
+```
+    'Form' => 'Jquery_Validator\\Form',
 ```
 
 ## Usage
@@ -38,6 +54,8 @@ You can probably guess that **jquery-validator** depends on jQuery, so at some p
 
 ### HTML Markup
 
+Feel free to generate your own markup, using ```data-validations``` attributes. They are just like the [Laravel validation rules](http://laravel.com/docs/validation#validation-rules).
+
 ```
 <form id="myForm" method="POST" action="submit.php">
   <input name="username" type="text" data-validations="required|alpha_dash" />
@@ -50,7 +68,29 @@ You can probably guess that **jquery-validator** depends on jQuery, so at some p
 </form>
 ```
 
-Notice the ```data-validations``` attributes. They are just like the [Laravel validation rules](http://laravel.com/docs/validation#validation-rules).
+Or, using the ```Jquery_Validator\Form``` class, do this:
+
+```
+// Somewhere define validation rules...
+$rules = array(
+    'username' => 'required|alpha_dash',
+    'email'    => 'email',
+    'password' => 'required|confirmed',
+    'picture'  => 'image',
+);
+
+// In the view, pass the rules to Form::open()
+{{ Form::open('submit.php', 'POST', array('id' => 'myForm'), null, $rules) }}
+    {{ Form::text('username') }}
+    {{ Form::text('email') }}
+    {{ Form::password('password') }}
+    {{ Form::password('password_confirmation') }}
+    {{ Form::file('picture') }}
+    {{ Form::submit('Submit') }}
+{{ Form::close() }}
+```
+
+The ```data-validations``` will be set automatically for each input.
 
 Handy. Right? This is a trivial example, but it should be enough to get you started.
 
