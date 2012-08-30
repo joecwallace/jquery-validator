@@ -41,13 +41,13 @@
 
 				$(selector).each(function () {
 
-					var validations = $(this).data("validations"),
+					var validation_rules = $(this).data("validations"),
 						name  = $(this).attr("name"),
 						value = $(this).val(),
-						rules = validations.parseRules(validations),
+						rules = validations.parseRules(validation_rules),
 						valid = true;
 
-					if (!validations) {
+					if (!validation_rules) {
 						return true;
 					}
 
@@ -321,7 +321,9 @@
 							evt.preventDefault();
 						}
 
-						options.done(valid);
+						if (options.done) {
+							options.done(valid);
+						}
 
 					});
 
@@ -344,7 +346,7 @@
 
 		if (methods[method]) {
 			return methods[method].apply(this, Array.prototype.slice.call(arguments, 1));
-		} else if (typeof method === 'object' || ! method) {
+		} else if (typeof method === 'object' || !method) {
 			return methods.make.apply(this, arguments);
 		} else {
 			$.error('Method ' + method + ' does not exist on jQuery' + namespace);
