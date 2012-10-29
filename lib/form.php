@@ -19,13 +19,13 @@ class Form extends \Laravel\Form {
 	public static function textarea($name, $value = '', $attributes = array())
 	{
 		$attributes = static::merge_rules($name, $attributes);
-		return parent::textarea($type, $name, $value, $attributes);
+		return parent::textarea($name, $value, $attributes);
 	}
 
 	public static function select($name, $options = array(), $selected = null, $attributes = array())
 	{
 		$attributes = static::merge_rules($name, $attributes);
-		return parent::select($type, $name, $value, $attributes);
+		return parent::select($name, $options, $selected, $attributes);
 	}
 
 	protected static function merge_rules($name, $attributes)
