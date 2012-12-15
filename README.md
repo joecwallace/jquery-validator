@@ -188,3 +188,7 @@ Nice. That's pretty much it. Please enjoy and let me know if you see any bad beh
 
 - The validation rules ```unique``` and ```exists``` will always be valid. The JavaScript in this bundle can't see into your DB, obviously.
 - The ```active_url``` rule returns the result of the ```url``` rule. There's not a good, easy way to check that the URL is active.
+
+## License
+
+MIT license - [http://www.opensource.org/licenses/mit-license.php](http://www.opensource.org/licenses/mit-license.php)
