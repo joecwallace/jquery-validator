@@ -351,7 +351,7 @@
 		} else {
 			$.error('Method ' + method + ' does not exist on jQuery' + namespace);
 		}
-
+		return this
 	};
 
 }(jQuery));
