@@ -337,6 +337,8 @@
 
 				});
 
+				return this;
+
 			},
 			destroy : function () {
 
@@ -345,6 +347,8 @@
 					$(this).off(namespace);
 
 				});
+
+				return this;
 
 			}
 
