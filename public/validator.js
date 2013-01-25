@@ -44,12 +44,14 @@
 					var validation_rules = $(this).data("validations"),
 						name  = $(this).attr("name"),
 						value = $(this).val(),
-						rules = validations.parseRules(validation_rules),
+						rules = [],
 						valid = true;
 
 					if (!validation_rules) {
 						return true;
 					}
+
+					rules = validations.parseRules(validation_rules);
 
 					$.each(rules, function (idx, rule) {
 
@@ -111,6 +113,12 @@
 				}
 
 				return value.match(re) !== null;
+
+			},
+
+			validate_regex : function (attribute, value, parameters) {
+
+				return this.validate_match(attribute, value, parameters);
 
 			},
 
@@ -351,7 +359,8 @@
 		} else {
 			$.error('Method ' + method + ' does not exist on jQuery' + namespace);
 		}
-		return this
+
+		return this;
 	};
 
 }(jQuery));
