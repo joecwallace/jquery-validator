@@ -238,4 +238,74 @@ describe('Validator', function() {
 
     });
 
+    describe('for the active_url rule', function() {
+
+        it ('should pass a valid URL', function() {
+
+            var elem = null,
+                elemValid = null,
+                formValid = null;
+
+            textInput.data('validations', 'active_url');
+            textInput.val('ftp://sub.domain.com/url/params?get=params&are=magic');
+
+            testForm.validator($.extend({
+                callback: function(e, v) {
+                    elem = e;
+                    elemValid = v;
+                },
+                done: function(v) {
+                    formValid = v;
+                }
+            }, defaultOptions)).submit();
+
+            waitsFor(function() {
+                return elem !== null &&
+                    formValid !== null;
+            });
+
+            runs(function() {
+                expect($(elem).attr('name')).toEqual(textInput.attr('name'));
+                expect(elemValid).toEqual(true);
+                expect(formValid).toEqual(true);
+            });
+
+        });
+
+        it ('should fail an invalid URL', function() {
+
+            var elem = null,
+                elemValid = null,
+                formValid = null;
+
+            textInput.data('validations', 'active_url');
+            textInput.val('ftp:/a/sub.domain.com/url/params?get=params&are=magic');
+
+            testForm.validator($.extend({
+                callback: function(e, v) {
+                    elem = e;
+                    elemValid = v;
+                },
+                done: function(v) {
+                    formValid = v;
+                }
+            }, defaultOptions)).submit();
+
+            waitsFor(function() {
+                return elem !== null &&
+                    formValid !== null;
+            });
+
+            runs(function() {
+                expect($(elem).attr('name')).toEqual(textInput.attr('name'));
+                expect(elemValid).toEqual(false);
+                expect(formValid).toEqual(false);
+            });
+
+        });
+
+        it ('does not actually test that a URL is active', function() {});
+
+    });
+
 });
