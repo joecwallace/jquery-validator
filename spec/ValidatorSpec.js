@@ -483,4 +483,311 @@ describe('Validator', function() {
 
     });
 
+    describe('for the alpha rule', function() {
+
+        it ('should pass for alphabetical characters only', function() {
+
+            var elem = null,
+                elemValid = null,
+                formValid = null;
+
+            textInput.data('validations', 'alpha')
+                .val('AbCdEfGhIjKlMnOpQrStUvWxYz');
+
+            testForm.validator($.extend({
+                callback: function(e, v) {
+                    elem = e;
+                    elemValid = v;
+                },
+                done: function(v) {
+                    formValid = v;
+                }
+            }, defaultOptions)).submit();
+
+            waitsFor(function() {
+                return elemValid !== null &&
+                    formValid !== null;
+            });
+
+            runs(function() {
+                expect($(elem).attr('name')).toEqual(textInput.attr('name'));
+                expect(elemValid).toEqual(true);
+                expect(formValid).toEqual(true);
+            });
+
+        });
+
+        it ('should fail for non-alphabetical characters', function() {
+
+            var elem = null,
+                elemValid = null,
+                formValid = null;
+
+            textInput.data('validations', 'alpha')
+                .val('AbCdEfGhIjKlMn2OpQrStUvWxYz');
+
+            testForm.validator($.extend({
+                callback: function(e, v) {
+                    elem = e;
+                    elemValid = v;
+                },
+                done: function(v) {
+                    formValid = v;
+                }
+            }, defaultOptions)).submit();
+
+            waitsFor(function() {
+                return elemValid !== null &&
+                    formValid !== null;
+            });
+
+            runs(function() {
+                expect($(elem).attr('name')).toEqual(textInput.attr('name'));
+                expect(elemValid).toEqual(false);
+                expect(formValid).toEqual(false);
+            });
+
+        });
+
+    });
+
+    describe('for the alpha_dash rule', function() {
+
+        it ('should pass for alphanumeric characters, dashes, and underscores only', function() {
+
+            var elem = null,
+                elemValid = null,
+                formValid = null;
+
+            textInput.data('validations', 'alpha_dash')
+                .val('AbCdEfGhIjKlMnOpQrStUvWxYz0123456789-_');
+
+            testForm.validator($.extend({
+                callback: function(e, v) {
+                    elem = e;
+                    elemValid = v;
+                },
+                done: function(v) {
+                    formValid = v;
+                }
+            }, defaultOptions)).submit();
+
+            waitsFor(function() {
+                return elemValid !== null &&
+                    formValid !== null;
+            });
+
+            runs(function() {
+                expect($(elem).attr('name')).toEqual(textInput.attr('name'));
+                expect(elemValid).toEqual(true);
+                expect(formValid).toEqual(true);
+            });
+
+        });
+
+        it ('should fail for other characters', function() {
+
+            var elem = null,
+                elemValid = null,
+                formValid = null;
+
+            textInput.data('validations', 'alpha_dash')
+                .val('AbCdEfGhIjKlMn OpQrStUvWxYz0123456789-_');
+
+            testForm.validator($.extend({
+                callback: function(e, v) {
+                    elem = e;
+                    elemValid = v;
+                },
+                done: function(v) {
+                    formValid = v;
+                }
+            }, defaultOptions)).submit();
+
+            waitsFor(function() {
+                return elemValid !== null &&
+                    formValid !== null;
+            });
+
+            runs(function() {
+                expect($(elem).attr('name')).toEqual(textInput.attr('name'));
+                expect(elemValid).toEqual(false);
+                expect(formValid).toEqual(false);
+            });
+
+        });
+
+    });
+
+    describe('for the alpha_num rule', function() {
+
+        it ('should pass for alphanumeric characters only', function() {
+
+            var elem = null,
+                elemValid = null,
+                formValid = null;
+
+            textInput.data('validations', 'alpha_num')
+                .val('AbCdEfGhIjKlMnOpQrStUvWxYz0123456789');
+
+            testForm.validator($.extend({
+                callback: function(e, v) {
+                    elem = e;
+                    elemValid = v;
+                },
+                done: function(v) {
+                    formValid = v;
+                }
+            }, defaultOptions)).submit();
+
+            waitsFor(function() {
+                return elemValid !== null &&
+                    formValid !== null;
+            });
+
+            runs(function() {
+                expect($(elem).attr('name')).toEqual(textInput.attr('name'));
+                expect(elemValid).toEqual(true);
+                expect(formValid).toEqual(true);
+            });
+
+        });
+
+        it ('should fail for other characters', function() {
+
+            var elem = null,
+                elemValid = null,
+                formValid = null;
+
+            textInput.data('validations', 'alpha_num')
+                .val('AbCdEfGhIjKlMn-OpQrStUvWxYz0123456789');
+
+            testForm.validator($.extend({
+                callback: function(e, v) {
+                    elem = e;
+                    elemValid = v;
+                },
+                done: function(v) {
+                    formValid = v;
+                }
+            }, defaultOptions)).submit();
+
+            waitsFor(function() {
+                return elemValid !== null &&
+                    formValid !== null;
+            });
+
+            runs(function() {
+                expect($(elem).attr('name')).toEqual(textInput.attr('name'));
+                expect(elemValid).toEqual(false);
+                expect(formValid).toEqual(false);
+            });
+
+        });
+
+    });
+
+    describe('for the before rule', function() {
+
+        it ('should fail for tomorrow\'s date', function() {
+
+            var elem = null,
+                elemValid = null,
+                formValid = null,
+                now = new Date;
+
+            textInput.data('validations', 'before:' + formatDate(now));
+            textInput.val(formatDate(now.setDate(now.getDate() + 1)));
+
+            testForm.validator($.extend({
+                callback: function(e, v) {
+                    elem = e;
+                    elemValid = v;
+                },
+                done: function(v) {
+                    formValid = v;
+                }
+            }, defaultOptions)).submit();
+
+            waitsFor(function() {
+                return elem !== null &&
+                    formValid !== null;
+            });
+
+            runs(function() {
+                expect($(elem).attr('name')).toEqual(textInput.attr('name'));
+                expect(elemValid).toEqual(false);
+                expect(formValid).toEqual(false);
+            });
+
+        });
+
+        it ('should fail for today\'s date', function() {
+
+            var elem = null,
+                elemValid = null,
+                formValid = null,
+                now = new Date;
+
+            textInput.data('validations', 'before:' + formatDate(now));
+            textInput.val(formatDate(now));
+
+            testForm.validator($.extend({
+                callback: function(e, v) {
+                    elem = e;
+                    elemValid = v;
+                },
+                done: function(v) {
+                    formValid = v;
+                }
+            }, defaultOptions)).submit();
+
+            waitsFor(function() {
+                return elem !== null &&
+                    formValid !== null;
+            });
+
+            runs(function() {
+                expect($(elem).attr('name')).toEqual(textInput.attr('name'));
+                expect(elemValid).toEqual(false);
+                expect(formValid).toEqual(false);
+            });
+
+        });
+
+        it ('should pass for yesterday\'s date', function() {
+
+            var elem = null,
+                elemValid = null,
+                formValid = null,
+                now = new Date;
+
+            textInput.data('validations', 'before:' + formatDate(now));
+            textInput.val(formatDate(now.setDate(now.getDate() - 1)));
+
+            testForm.validator($.extend({
+                callback: function(e, v) {
+                    elem = e;
+                    elemValid = v;
+                },
+                done: function(v) {
+                    formValid = v;
+                }
+            }, defaultOptions)).submit();
+
+            waitsFor(function() {
+                return elem !== null &&
+                    formValid !== null;
+            });
+
+            runs(function() {
+                expect($(elem).attr('name')).toEqual(textInput.attr('name'));
+                expect(elemValid).toEqual(true);
+                expect(formValid).toEqual(true);
+            });
+
+        });
+
+    });
+
 });
