@@ -9,7 +9,7 @@ function formatDate(d) {
 describe('Validator', function() {
 
     var testForm, testFormHtml,
-        checkboxInput, textInput, passwordInput,
+        checkboxInput, textInput, confirmationInput, passwordInput,
         defaultOptions = {
             events: 'submit',
             selector: 'input',
@@ -22,6 +22,7 @@ describe('Validator', function() {
 
         checkboxInput = $('[name=checkboxInput]', testForm);
         textInput = $('[name=textInput]', testForm);
+        confirmationInput = $('[name=textInput_confirmation]', testForm);
         passwordInput = $('[name=passwordInput]', testForm);
     });
 
@@ -784,6 +785,172 @@ describe('Validator', function() {
                 expect($(elem).attr('name')).toEqual(textInput.attr('name'));
                 expect(elemValid).toEqual(true);
                 expect(formValid).toEqual(true);
+            });
+
+        });
+
+    });
+
+    describe('for the between rule', function() {
+
+        it ('should pass for a value between the terms', function() {
+
+            var elem = null,
+                elemValid = null,
+                formValid = null;
+
+            textInput.data('validations', 'between:9,10')
+                .val('9.5');
+
+            testForm.validator($.extend({
+                callback: function(e, v) {
+                    elem = e;
+                    elemValid = v;
+                },
+                done: function(v) {
+                    formValid = v;
+                }
+            }, defaultOptions)).submit();
+
+            waitsFor(function() {
+                return elem !== null &&
+                    formValid !== null;
+            });
+
+            runs(function() {
+                expect($(elem).attr('name')).toEqual(textInput.attr('name'));
+                expect(elemValid).toEqual(true);
+                expect(formValid).toEqual(true);
+            });
+
+        });
+
+        it ('should pass for values equal to the terms', function() {
+
+            var elemsValid = [],
+                formValid = null;
+
+            textInput.data('validations', 'between:9,10')
+                .val('9.000000');
+            passwordInput.data('validations', 'between:9,10')
+                .val('10.000000');
+
+            testForm.validator($.extend({
+                callback: function(e, v) {
+                    elemsValid.push(v);
+                },
+                done: function(v) {
+                    formValid = v;
+                }
+            }, defaultOptions)).submit();
+
+            waitsFor(function() {
+                return formValid !== null;
+            });
+
+            runs(function() {
+                expect(elemsValid).not.toContain(false);
+                expect(formValid).toEqual(true);
+            });
+
+        });
+
+        it ('should fail for values outside of the terms', function() {
+
+            var elemsValid = [],
+                formValid = null;
+
+            textInput.data('validations', 'between:9,10')
+                .val('8.999999');
+            passwordInput.data('validations', 'between:9,10')
+                .val('10.000001');
+
+            testForm.validator($.extend({
+                callback: function(e, v) {
+                    elemsValid.push(v);
+                },
+                done: function(v) {
+                    formValid = v;
+                }
+            }, defaultOptions)).submit();
+
+            waitsFor(function() {
+                return formValid !== null;
+            });
+
+            runs(function() {
+                expect(elemsValid).not.toContain(true);
+                expect(formValid).toEqual(false);
+            });
+
+        });
+
+    });
+
+    describe('for the confirmed rule', function() {
+
+        it ('should pass for identical values', function() {
+
+            var elem = null,
+                elemValid = null,
+                formValid = null;
+
+            textInput.data('validations', 'confirmed')
+                .val('Confirm me!');
+            confirmationInput.val('Confirm me!');
+
+            testForm.validator($.extend({
+                callback: function(e, v) {
+                    elem = e;
+                    elemValid = v;
+                },
+                done: function(v) {
+                    formValid = v;
+                }
+            }, defaultOptions)).submit();
+
+            waitsFor(function() {
+                return elem !== null &&
+                    formValid !== null;
+            });
+
+            runs(function() {
+                expect($(elem).attr('name')).toEqual(textInput.attr('name'));
+                expect(elemValid).toEqual(true);
+                expect(formValid).toEqual(true);
+            });
+
+        });
+
+        it ('should fail for different values', function() {
+
+            var elem = null,
+                elemValid = null,
+                formValid = null;
+
+            textInput.data('validations', 'confirmed')
+                .val('Confirm me!');
+            confirmationInput.val('Different!');
+
+            testForm.validator($.extend({
+                callback: function(e, v) {
+                    elem = e;
+                    elemValid = v;
+                },
+                done: function(v) {
+                    formValid = v;
+                }
+            }, defaultOptions)).submit();
+
+            waitsFor(function() {
+                return elem !== null &&
+                    formValid !== null;
+            });
+
+            runs(function() {
+                expect($(elem).attr('name')).toEqual(textInput.attr('name'));
+                expect(elemValid).toEqual(false);
+                expect(formValid).toEqual(false);
             });
 
         });
