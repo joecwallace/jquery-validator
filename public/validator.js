@@ -7,7 +7,7 @@
 			selector                : null,
 			preventDefault          : false,
 			preventDefaultIfInvalid : false,
-			callback                : function (valid) {
+			callback                : function (elem, valid) {
 				//
 			},
 			done                    : function (valid) {
@@ -84,16 +84,16 @@
 
 			implicit : function (rule) {
 
-				return rule.method === "validate_required"
-					|| rule.method === "validate_required_with"
-					|| rule.method === "validate_accepted";
+				return rule.method === "validate_required" ||
+					rule.method === "validate_required_with" ||
+					rule.method === "validate_accepted";
 
 			},
 
 			size : function (attribute, value) {
 
 				if (this.validate_numeric(attribute, value)) {
-					return value;
+					return parseFloat(value);
 				}
 
 				return value.length;
@@ -177,7 +177,7 @@
 
 			validate_size : function (attribute, value, parameters) {
 
-				return this.size(attribute, value) === parameters[0];
+				return this.size(attribute, value) === parseFloat(parameters[0]);
 
 			},
 
@@ -185,19 +185,19 @@
 
 				var size = this.size(attribute, value);
 
-				return size >= parameters[0] && size <= parameters[1];
+				return size >= parseFloat(parameters[0]) && size <= parseFloat(parameters[1]);
 
 			},
 
 			validate_min : function (attribute, value, parameters) {
 
-				return this.size(attribute, value) >= parameters[0];
+				return this.size(attribute, value) >= parseFloat(parameters[0]);
 
 			},
 
 			validate_max : function (attribute, value, parameters) {
 
-				return this.size(attribute, value) <= parameters[0];
+				return this.size(attribute, value) <= parseFloat(parameters[0]);
 
 			},
 
