@@ -1,3 +1,11 @@
+function formatDate(d) {
+    if (d.constructor == Number) {
+        d = new Date(d);
+    }
+
+    return (d.getYear() + 1900) + '-' + (d.getMonth() + 1) + '-' + d.getDate();
+}
+
 describe('Validator', function() {
 
     var testForm, testFormHtml,
@@ -42,7 +50,7 @@ describe('Validator', function() {
 
     });
 
-    describe('for the ACCEPTED rule', function() {
+    describe('for the accepted rule', function() {
 
         it ('should pass a checked checkbox', function() {
 
@@ -305,6 +313,109 @@ describe('Validator', function() {
         });
 
         it ('does not actually test that a URL is active', function() {});
+
+    });
+
+    describe('for the after rule', function() {
+
+        it ('should pass for tomorrow\'s date', function() {
+
+            var elem = null,
+                elemValid = null,
+                formValid = null,
+                now = new Date;
+
+            textInput.data('validations', 'after:' + formatDate(now));
+            textInput.val(formatDate(now.setDate(now.getDate() + 1)));
+
+            testForm.validator($.extend({
+                callback: function(e, v) {
+                    elem = e;
+                    elemValid = v;
+                },
+                done: function(v) {
+                    formValid = v;
+                }
+            }, defaultOptions)).submit();
+
+            waitsFor(function() {
+                return elem !== null &&
+                    formValid !== null;
+            });
+
+            runs(function() {
+                expect($(elem).attr('name')).toEqual(textInput.attr('name'));
+                expect(elemValid).toEqual(true);
+                expect(formValid).toEqual(true);
+            });
+
+        });
+
+        it ('should fail for today\'s date', function() {
+
+            var elem = null,
+                elemValid = null,
+                formValid = null,
+                now = new Date;
+
+            textInput.data('validations', 'after:' + formatDate(now));
+            textInput.val(formatDate(now));
+
+            testForm.validator($.extend({
+                callback: function(e, v) {
+                    elem = e;
+                    elemValid = v;
+                },
+                done: function(v) {
+                    formValid = v;
+                }
+            }, defaultOptions)).submit();
+
+            waitsFor(function() {
+                return elem !== null &&
+                    formValid !== null;
+            });
+
+            runs(function() {
+                expect($(elem).attr('name')).toEqual(textInput.attr('name'));
+                expect(elemValid).toEqual(false);
+                expect(formValid).toEqual(false);
+            });
+
+        });
+
+        it ('should fail for yesterday\'s date', function() {
+
+            var elem = null,
+                elemValid = null,
+                formValid = null,
+                now = new Date;
+
+            textInput.data('validations', 'after:' + formatDate(now));
+            textInput.val(formatDate(now.setDate(now.getDate() - 1)));
+
+            testForm.validator($.extend({
+                callback: function(e, v) {
+                    elem = e;
+                    elemValid = v;
+                },
+                done: function(v) {
+                    formValid = v;
+                }
+            }, defaultOptions)).submit();
+
+            waitsFor(function() {
+                return elem !== null &&
+                    formValid !== null;
+            });
+
+            runs(function() {
+                expect($(elem).attr('name')).toEqual(textInput.attr('name'));
+                expect(elemValid).toEqual(false);
+                expect(formValid).toEqual(false);
+            });
+
+        });
 
     });
 
