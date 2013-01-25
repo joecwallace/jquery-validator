@@ -50,6 +50,70 @@ describe('Validator', function() {
 
     });
 
+    it ('should allow custom attributes for validations', function() {
+
+        var elem = null,
+            elemValid = null,
+            formValid = null;
+
+        textInput.data('custom', 'required');
+        textInput.val('any');
+
+        testForm.validator($.extend({
+            validationAttribute: 'custom',
+            callback: function(e, v) {
+                elem = e;
+                elemValid = v;
+            },
+            done: function(v) {
+                formValid = v;
+            }
+        }, defaultOptions)).submit();
+
+        waitsFor(function() {
+            return formValid !== null;
+        });
+
+        runs(function() {
+            expect($(elem).attr('name')).toEqual(textInput.attr('name'));
+            expect(elemValid).toEqual(true);
+            expect(formValid).toEqual(true);
+        });
+
+    });
+
+    it ('should allow multiple instances', function() {
+
+        var warningsValid = null,
+            errorsValid = null;
+
+        textInput.data('warnings', 'email').data('errors', 'required').val('not an email');
+
+        testForm.validator($.extend({
+            validationAttribute: 'warnings',
+            done: function(v) {
+                warningsValid = v;
+            }
+        }, defaultOptions))
+        .validator($.extend({
+            validationAttribute: 'errors',
+            done: function(v) {
+                errorsValid = v;
+            }
+        }, defaultOptions)).submit();
+
+        waitsFor(function() {
+            return warningsValid !== null &&
+                errorsValid !== null;
+        });
+
+        runs(function() {
+            expect(warningsValid).toEqual(false);
+            expect(errorsValid).toEqual(true);
+        });
+
+    });
+
     describe('for the accepted rule', function() {
 
         it ('should pass a checked checkbox', function() {

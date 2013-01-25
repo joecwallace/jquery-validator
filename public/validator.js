@@ -5,6 +5,7 @@
 		defaults = {
 			events                  : null,
 			selector                : null,
+			validationAttribute     : 'validations',
 			preventDefault          : false,
 			preventDefaultIfInvalid : false,
 			callback                : function (elem, valid) {
@@ -35,13 +36,13 @@
 
 			},
 
-			validate : function (selector, callback) {
+			validate : function (selector, attribute, callback) {
 
 				var allValid = true;
 
 				$(selector).each(function () {
 
-					var validation_rules = $(this).data("validations"),
+					var validation_rules = $(this).data(attribute),
 						name  = $(this).attr("name"),
 						value = $(this).val(),
 						rules = [],
@@ -318,13 +319,14 @@
 					$.error('jQuery' + namespace + ' may not be intialized without options.');
 				}
 
+				options = $.extend({}, defaults, options);
 				options.events = options.events.replace(/(\w+)/g, "$1" + namespace + " ");
 
 				this.each(function () {
 
 					$(this).on(options.events, function (evt) {
 
-						var valid = validations.validate(options.selector || this, options.callback);
+						var valid = validations.validate(options.selector || this, options.validationAttribute, options.callback);
 						if ((!valid && options.preventDefaultIfInvalid) || options.preventDefault) {
 							evt.preventDefault();
 						}
