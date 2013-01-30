@@ -9,7 +9,7 @@ function formatDate(d) {
 describe('Validator', function() {
 
     var testForm, testFormHtml,
-        checkboxInput, textInput, confirmationInput, passwordInput,
+        checkboxInput, textInput, confirmationInput, passwordInput, radioInput,
         defaultOptions = {
             events: 'submit',
             selector: 'input',
@@ -24,6 +24,7 @@ describe('Validator', function() {
         textInput = $('[name=textInput]', testForm);
         confirmationInput = $('[name=textInput_confirmation]', testForm);
         passwordInput = $('[name=passwordInput]', testForm);
+        radioInput = $('[name=radioInput]', testForm);
     });
 
     afterEach(function() {
@@ -1797,6 +1798,589 @@ describe('Validator', function() {
             });
 
         });
+    });
+
+    describe('for the regex rule', function() {
+
+        it ('should pass for a match', function() {
+
+            var elem = null,
+                elemValid = null,
+                formValid = null;
+
+            textInput.data('validations', 'regex:\\w{4}')
+                .val('asdf');
+
+            testForm.validator($.extend({
+                callback: function(e, v) {
+                    elem = e;
+                    elemValid = v;
+                },
+                done: function(v) {
+                    formValid = v;
+                }
+            }, defaultOptions)).submit();
+
+            waitsFor(function() {
+                return elem !== null &&
+                    formValid !== null;
+            });
+
+            runs(function() {
+                expect($(elem).attr('name')).toEqual(textInput.attr('name'));
+                expect(elemValid).toEqual(true);
+                expect(formValid).toEqual(true);
+            });
+
+        });
+
+        it ('should fail for a non-match', function() {
+
+            var elem = null,
+                elemValid = null,
+                formValid = null;
+
+            textInput.data('validations', 'regex:\\w{4}')
+                .val('jkl');
+
+            testForm.validator($.extend({
+                callback: function(e, v) {
+                    elem = e;
+                    elemValid = v;
+                },
+                done: function(v) {
+                    formValid = v;
+                }
+            }, defaultOptions)).submit();
+
+            waitsFor(function() {
+                return elem !== null &&
+                    formValid !== null;
+            });
+
+            runs(function() {
+                expect($(elem).attr('name')).toEqual(textInput.attr('name'));
+                expect(elemValid).toEqual(false);
+                expect(formValid).toEqual(false);
+            });
+
+        });
+    });
+
+    describe('for the required rule', function() {
+
+        it ('should pass for a value', function() {
+
+            var elem = null,
+                elemValid = null,
+                formValid = null;
+
+            textInput.data('validations', 'required')
+                .val('asdf');
+
+            testForm.validator($.extend({
+                callback: function(e, v) {
+                    elem = e;
+                    elemValid = v;
+                },
+                done: function(v) {
+                    formValid = v;
+                }
+            }, defaultOptions)).submit();
+
+            waitsFor(function() {
+                return elem !== null &&
+                    formValid !== null;
+            });
+
+            runs(function() {
+                expect($(elem).attr('name')).toEqual(textInput.attr('name'));
+                expect(elemValid).toEqual(true);
+                expect(formValid).toEqual(true);
+            });
+
+        });
+
+        it ('should fail for an empty value', function() {
+
+            var elem = null,
+                elemValid = null,
+                formValid = null;
+
+            textInput.data('validations', 'required')
+                .val('  ');
+
+            testForm.validator($.extend({
+                callback: function(e, v) {
+                    elem = e;
+                    elemValid = v;
+                },
+                done: function(v) {
+                    formValid = v;
+                }
+            }, defaultOptions)).submit();
+
+            waitsFor(function() {
+                return elem !== null &&
+                    formValid !== null;
+            });
+
+            runs(function() {
+                expect($(elem).attr('name')).toEqual(textInput.attr('name'));
+                expect(elemValid).toEqual(false);
+                expect(formValid).toEqual(false);
+            });
+
+        });
+
+        it ('should pass on any checked radio', function() {
+
+            var formValid = null;
+
+            radioInput.data('validations', 'required');
+            radioInput.first().prop('checked', 'checked');
+
+            testForm.validator($.extend({
+                done: function(v) {
+                    formValid = v;
+                }
+            }, defaultOptions)).submit();
+
+            waitsFor(function() {
+                return formValid !== null;
+            });
+
+            runs(function() {
+                expect(formValid).toEqual(true);
+            });
+
+        });
+
+        it ('should fail for an unchecked radio (group)', function() {
+
+            var formValid = null;
+
+            radioInput.data('validations', 'required');
+
+            testForm.validator($.extend({
+                done: function(v) {
+                    formValid = v;
+                }
+            }, defaultOptions)).submit();
+
+            waitsFor(function() {
+                return formValid !== null;
+            });
+
+            runs(function() {
+                expect(formValid).toEqual(false);
+            });
+
+        });
+    });
+
+    describe('for the required_with rule', function() {
+
+        it ('should pass with values in both', function() {
+
+            var elem = null,
+                elemValid = null,
+                formValid = null;
+
+            textInput.data('validations', 'required_with:passwordInput')
+                .val('asdf');
+            passwordInput.val('jkl');
+
+            testForm.validator($.extend({
+                callback: function(e, v) {
+                    elem = e;
+                    elemValid = v;
+                },
+                done: function(v) {
+                    formValid = v;
+                }
+            }, defaultOptions)).submit();
+
+            waitsFor(function() {
+                return elem !== null &&
+                    formValid !== null;
+            });
+
+            runs(function() {
+                expect($(elem).attr('name')).toEqual(textInput.attr('name'));
+                expect(elemValid).toEqual(true);
+                expect(formValid).toEqual(true);
+            });
+
+        });
+
+        it ('should pass with values in neither', function() {
+
+            var elem = null,
+                elemValid = null,
+                formValid = null;
+
+            textInput.data('validations', 'required_with:passwordInput')
+                .val('  ');
+            passwordInput.val('');
+
+            testForm.validator($.extend({
+                callback: function(e, v) {
+                    elem = e;
+                    elemValid = v;
+                },
+                done: function(v) {
+                    formValid = v;
+                }
+            }, defaultOptions)).submit();
+
+            waitsFor(function() {
+                return elem !== null &&
+                    formValid !== null;
+            });
+
+            runs(function() {
+                expect($(elem).attr('name')).toEqual(textInput.attr('name'));
+                expect(elemValid).toEqual(true);
+                expect(formValid).toEqual(true);
+            });
+
+        });
+
+        it ('should fail with value in term but not in self', function() {
+
+            var elem = null,
+                elemValid = null,
+                formValid = null;
+
+            textInput.data('validations', 'required_with:passwordInput')
+                .val('  ');
+            passwordInput.val('jkl');
+
+            testForm.validator($.extend({
+                callback: function(e, v) {
+                    elem = e;
+                    elemValid = v;
+                },
+                done: function(v) {
+                    formValid = v;
+                }
+            }, defaultOptions)).submit();
+
+            waitsFor(function() {
+                return elem !== null &&
+                    formValid !== null;
+            });
+
+            runs(function() {
+                expect($(elem).attr('name')).toEqual(textInput.attr('name'));
+                expect(elemValid).toEqual(false);
+                expect(formValid).toEqual(false);
+            });
+
+        });
+    });
+
+    describe('for the same rule', function() {
+
+        it ('should pass for identical values', function() {
+
+            var elem = null,
+                elemValid = null,
+                formValid = null;
+
+            textInput.data('validations', 'same:textInput_confirmation')
+                .val('Confirm me!');
+            confirmationInput.val('Confirm me!');
+
+            testForm.validator($.extend({
+                callback: function(e, v) {
+                    elem = e;
+                    elemValid = v;
+                },
+                done: function(v) {
+                    formValid = v;
+                }
+            }, defaultOptions)).submit();
+
+            waitsFor(function() {
+                return elem !== null &&
+                    formValid !== null;
+            });
+
+            runs(function() {
+                expect($(elem).attr('name')).toEqual(textInput.attr('name'));
+                expect(elemValid).toEqual(true);
+                expect(formValid).toEqual(true);
+            });
+
+        });
+
+        it ('should fail for different values', function() {
+
+            var elem = null,
+                elemValid = null,
+                formValid = null;
+
+            textInput.data('validations', 'same:textInput_confirmation')
+                .val('Confirm me!');
+            confirmationInput.val('Different!');
+
+            testForm.validator($.extend({
+                callback: function(e, v) {
+                    elem = e;
+                    elemValid = v;
+                },
+                done: function(v) {
+                    formValid = v;
+                }
+            }, defaultOptions)).submit();
+
+            waitsFor(function() {
+                return elem !== null &&
+                    formValid !== null;
+            });
+
+            runs(function() {
+                expect($(elem).attr('name')).toEqual(textInput.attr('name'));
+                expect(elemValid).toEqual(false);
+                expect(formValid).toEqual(false);
+            });
+
+        });
+
+    });
+
+    describe('for the size rule', function() {
+
+        it ('should pass for a string of length equal to the term', function() {
+
+            var elem = null,
+                elemValid = null,
+                formValid = null;
+
+            textInput.data('validations', 'size:4')
+                .val('asdf');
+
+            testForm.validator($.extend({
+                callback: function(e, v) {
+                    elem = e;
+                    elemValid = v;
+                },
+                done: function(v) {
+                    formValid = v;
+                }
+            }, defaultOptions)).submit();
+
+            waitsFor(function() {
+                return elem !== null &&
+                    formValid !== null;
+            });
+
+            runs(function() {
+                expect($(elem).attr('name')).toEqual(textInput.attr('name'));
+                expect(elemValid).toEqual(true);
+                expect(formValid).toEqual(true);
+            });
+
+        });
+
+        it ('should fail for a string shorter than the term', function() {
+
+            var elem = null,
+                elemValid = null,
+                formValid = null;
+
+            textInput.data('validations', 'size:4')
+                .val('jkl');
+
+            testForm.validator($.extend({
+                callback: function(e, v) {
+                    elem = e;
+                    elemValid = v;
+                },
+                done: function(v) {
+                    formValid = v;
+                }
+            }, defaultOptions)).submit();
+
+            waitsFor(function() {
+                return elem !== null &&
+                    formValid !== null;
+            });
+
+            runs(function() {
+                expect($(elem).attr('name')).toEqual(textInput.attr('name'));
+                expect(elemValid).toEqual(false);
+                expect(formValid).toEqual(false);
+            });
+
+        });
+
+        it ('should fail for a string longer than the term', function() {
+
+            var elem = null,
+                elemValid = null,
+                formValid = null;
+
+            textInput.data('validations', 'size:4')
+                .val('asdfj');
+
+            testForm.validator($.extend({
+                callback: function(e, v) {
+                    elem = e;
+                    elemValid = v;
+                },
+                done: function(v) {
+                    formValid = v;
+                }
+            }, defaultOptions)).submit();
+
+            waitsFor(function() {
+                return elem !== null &&
+                    formValid !== null;
+            });
+
+            runs(function() {
+                expect($(elem).attr('name')).toEqual(textInput.attr('name'));
+                expect(elemValid).toEqual(false);
+                expect(formValid).toEqual(false);
+            });
+
+        });
+
+        it ('should pass for a number equal to the term', function() {
+
+            var elem = null,
+                elemValid = null,
+                formValid = null;
+
+            textInput.data('validations', 'size:10')
+                .val('10');
+
+            testForm.validator($.extend({
+                callback: function(e, v) {
+                    elem = e;
+                    elemValid = v;
+                },
+                done: function(v) {
+                    formValid = v;
+                }
+            }, defaultOptions)).submit();
+
+            waitsFor(function() {
+                return elem !== null &&
+                    formValid !== null;
+            });
+
+            runs(function() {
+                expect($(elem).attr('name')).toEqual(textInput.attr('name'));
+                expect(elemValid).toEqual(true);
+                expect(formValid).toEqual(true);
+            });
+
+        });
+
+        it ('should fail for a number less than the term', function() {
+
+            var elem = null,
+                elemValid = null,
+                formValid = null;
+
+            textInput.data('validations', 'size:10')
+                .val('9');
+
+            testForm.validator($.extend({
+                callback: function(e, v) {
+                    elem = e;
+                    elemValid = v;
+                },
+                done: function(v) {
+                    formValid = v;
+                }
+            }, defaultOptions)).submit();
+
+            waitsFor(function() {
+                return elem !== null &&
+                    formValid !== null;
+            });
+
+            runs(function() {
+                expect($(elem).attr('name')).toEqual(textInput.attr('name'));
+                expect(elemValid).toEqual(false);
+                expect(formValid).toEqual(false);
+            });
+
+        });
+
+        it ('should fail for a number greater than the term', function() {
+
+            var elem = null,
+                elemValid = null,
+                formValid = null;
+
+            textInput.data('validations', 'size:9')
+                .val('10');
+
+            testForm.validator($.extend({
+                callback: function(e, v) {
+                    elem = e;
+                    elemValid = v;
+                },
+                done: function(v) {
+                    formValid = v;
+                }
+            }, defaultOptions)).submit();
+
+            waitsFor(function() {
+                return elem !== null &&
+                    formValid !== null;
+            });
+
+            runs(function() {
+                expect($(elem).attr('name')).toEqual(textInput.attr('name'));
+                expect(elemValid).toEqual(false);
+                expect(formValid).toEqual(false);
+            });
+
+        });
+
+    });
+
+    describe('for the unique rule', function() {
+
+        it ('should pass for any value', function() {
+
+            var elem = null,
+                elemValid = null,
+                formValid = null;
+
+            textInput.data('validations', 'unique')
+                .val('some value');
+
+            testForm.validator($.extend({
+                callback: function(e, v) {
+                    elem = e;
+                    elemValid = v;
+                },
+                done: function(v) {
+                    formValid = v;
+                }
+            }, defaultOptions)).submit();
+
+            waitsFor(function() {
+                return elem !== null &&
+                    formValid !== null;
+            });
+
+            runs(function() {
+                expect($(elem).attr('name')).toEqual(textInput.attr('name'));
+                expect(elemValid).toEqual(true);
+                expect(formValid).toEqual(true);
+            });
+
+        });
+
     });
 
 });

@@ -125,6 +125,10 @@
 
 			validate_required : function (attribute, value) {
 
+				if ($("[name=" + attribute + "]").first().is(':radio')) {
+					return $("[name=" + attribute + "]:checked").val() !== undefined;
+				}
+
 				return this.validate_match(attribute, value, /[^\s]+/);
 
 			},
