@@ -1301,6 +1301,38 @@ describe('Validator', function() {
             });
 
         });
+        
+        it ('should pass for a negative integer', function() {
+
+            var elem = null,
+                elemValid = null,
+                formValid = null;
+
+            textInput.data('validations', 'integer')
+                .val('-42');
+
+            testForm.validator($.extend({
+                callback: function(e, v) {
+                    elem = e;
+                    elemValid = v;
+                },
+                done: function(v) {
+                    formValid = v;
+                }
+            }, defaultOptions)).submit();
+
+            waitsFor(function() {
+                return elem !== null &&
+                    formValid !== null;
+            });
+
+            runs(function() {
+                expect($(elem).attr('name')).toEqual(textInput.attr('name'));
+                expect(elemValid).toEqual(true);
+                expect(formValid).toEqual(true);
+            });
+            
+        });
 
         it ('should fail for a float', function() {
 
@@ -1735,6 +1767,38 @@ describe('Validator', function() {
 
         });
 
+        it ('should pass for a negative integer', function() {
+
+            var elem = null,
+                elemValid = null,
+                formValid = null;
+
+            textInput.data('validations', 'numeric')
+                .val('-42');
+
+            testForm.validator($.extend({
+                callback: function(e, v) {
+                    elem = e;
+                    elemValid = v;
+                },
+                done: function(v) {
+                    formValid = v;
+                }
+            }, defaultOptions)).submit();
+
+            waitsFor(function() {
+                return elem !== null &&
+                    formValid !== null;
+            });
+
+            runs(function() {
+                expect($(elem).attr('name')).toEqual(textInput.attr('name'));
+                expect(elemValid).toEqual(true);
+                expect(formValid).toEqual(true);
+            });
+
+        });
+
         it ('should pass for a valid float', function() {
 
             var elem = null,
@@ -1743,6 +1807,38 @@ describe('Validator', function() {
 
             textInput.data('validations', 'numeric')
                 .val('42.7');
+
+            testForm.validator($.extend({
+                callback: function(e, v) {
+                    elem = e;
+                    elemValid = v;
+                },
+                done: function(v) {
+                    formValid = v;
+                }
+            }, defaultOptions)).submit();
+
+            waitsFor(function() {
+                return elem !== null &&
+                    formValid !== null;
+            });
+
+            runs(function() {
+                expect($(elem).attr('name')).toEqual(textInput.attr('name'));
+                expect(elemValid).toEqual(true);
+                expect(formValid).toEqual(true);
+            });
+
+        });
+
+        it ('should pass for a negative float', function() {
+
+            var elem = null,
+                elemValid = null,
+                formValid = null;
+
+            textInput.data('validations', 'numeric')
+                .val('-42.7');
 
             testForm.validator($.extend({
                 callback: function(e, v) {

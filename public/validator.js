@@ -170,13 +170,13 @@
 
 			validate_numeric : function (attribute, value) {
 
-				return this.validate_match(attribute, value, /^\d+(\.\d*)?$/);
+				return this.validate_match(attribute, value, /^-?\d+(\.\d*)?$/);
 
 			},
 
 			validate_integer : function (attribute, value) {
 
-				return this.validate_match(attribute, value, /^\d+$/);
+				return this.validate_match(attribute, value, /^-?\d+$/);
 
 			},
 
