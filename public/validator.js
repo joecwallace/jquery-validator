@@ -97,7 +97,7 @@
 					return parseFloat(value);
 				}
 
-				return value.length;
+				return value.replace(/\r?\n/g, '\r\n').length;
 			},
 
 			validate_match : function (attribute, value, parameters) {

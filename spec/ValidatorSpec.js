@@ -9,10 +9,11 @@ function formatDate(d) {
 describe('Validator', function() {
 
     var testForm, testFormHtml,
-        checkboxInput, textInput, confirmationInput, passwordInput, radioInput,
+        checkboxInput, textInput, confirmationInput,
+        passwordInput, radioInput, textareaInput,
         defaultOptions = {
             events: 'submit',
-            selector: 'input',
+            selector: 'input, textarea',
             preventDefault: true
         };
 
@@ -25,6 +26,7 @@ describe('Validator', function() {
         confirmationInput = $('[name=textInput_confirmation]', testForm);
         passwordInput = $('[name=passwordInput]', testForm);
         radioInput = $('[name=radioInput]', testForm);
+        textareaInput = $('[name=textareaInput]', testForm);
     });
 
     afterEach(function() {
@@ -2373,6 +2375,75 @@ describe('Validator', function() {
                 expect($(elem).attr('name')).toEqual(textInput.attr('name'));
                 expect(elemValid).toEqual(true);
                 expect(formValid).toEqual(true);
+            });
+
+        });
+
+        describe('when evaluating length', function() {
+
+            it ('should convert LF to CRLF', function() {
+
+                var elem = null,
+                    elemValid = null,
+                    formValid = null;
+
+                // Should pass when \n becomes \r\n
+                textareaInput.data('validations', 'size:18')
+                    .val('test\nline\nbreaks');
+
+                testForm.validator($.extend({
+                    callback: function(e, v) {
+                        elem = e;
+                        elemValid = v;
+                    },
+                    done: function(v) {
+                        formValid = v;
+                    }
+                }, defaultOptions)).submit();
+
+                waitsFor(function() {
+                    return elem !== null &&
+                        formValid !== null;
+                });
+
+                runs(function() {
+                    expect($(elem).attr('name')).toEqual(textareaInput.attr('name'));
+                    expect(elemValid).toEqual(true);
+                    expect(formValid).toEqual(true);
+                });
+
+            });
+
+            it ('should not change CRLF', function() {
+
+                var elem = null,
+                    elemValid = null,
+                    formValid = null;
+
+                textareaInput.data('validations', 'size:18')
+                    .val('test\r\nline\r\nbreaks');
+
+                testForm.validator($.extend({
+                    callback: function(e, v) {
+                        elem = e;
+                        elemValid = v;
+                    },
+                    done: function(v) {
+                        formValid = v;
+                    }
+                }, defaultOptions)).submit();
+
+                waitsFor(function() {
+                    return elem !== null &&
+                        formValid !== null;
+                });
+
+                runs(function() {
+                    expect($(elem).attr('name')).toEqual(textareaInput.attr('name'));
+                    expect(elemValid).toEqual(true);
+                    expect(formValid).toEqual(true);
+                });
+
             });
 
         });
