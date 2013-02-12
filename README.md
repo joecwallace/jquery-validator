@@ -184,6 +184,27 @@ $(document).ready(function() {
 
 Nice. That's pretty much it. Please enjoy and let me know if you see any bad behavior.
 
+#### Custom validation rules
+
+If you want to insert custom validation rules on the client side, that's pretty simple, too.
+
+```
+$(document).ready(function() {
+    $('input').validator({
+      ...
+      validate_special: function(attribute, value, parameters) {
+          return value == 'special';
+      }
+    });
+});
+```
+
+To trigger the ``` validate_special ``` rule, the markup would look like this:
+
+```
+<input type="text" data-validations="special">
+```
+
 ## Known issues
 
 - The validation rules ```unique``` and ```exists``` will always be valid. The JavaScript in this bundle can't see into your DB, obviously.
