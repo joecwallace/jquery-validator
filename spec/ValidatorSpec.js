@@ -118,6 +118,78 @@ describe('Validator', function() {
 
     });
 
+    it ('should accept custom validation rules', function() {
+
+        var valid = null,
+            attribute,
+            value,
+            parameters;
+
+        textInput.data('validations', 'special:p1,p2').val('test value');
+
+        testForm.validator($.extend({
+            done: function(v) {
+                valid = v;
+            },
+            validate_special: function(a, v, p) {
+                attribute = a;
+                value = v;
+                parameters = p;
+
+                return true;
+            }
+        }, defaultOptions)).submit();
+
+        waitsFor(function() {
+            return valid !== null;
+        });
+
+        runs(function() {
+            expect(valid).toEqual(true);
+            expect(attribute).toEqual('textInput');
+            expect(value).toEqual('test value');
+            expect(parameters).toContain('p1');
+            expect(parameters).toContain('p2');
+        });
+
+    });
+
+    it ('should fail when custom validation rules fail', function() {
+
+        var valid = null,
+            attribute,
+            value,
+            parameters;
+
+        textInput.data('validations', 'special:p1,p2').val('test value');
+
+        testForm.validator($.extend({
+            done: function(v) {
+                valid = v;
+            },
+            validate_special: function(a, v, p) {
+                attribute = a;
+                value = v;
+                parameters = p;
+
+                return false;
+            }
+        }, defaultOptions)).submit();
+
+        waitsFor(function() {
+            return valid !== null;
+        });
+
+        runs(function() {
+            expect(valid).toEqual(false);
+            expect(attribute).toEqual('textInput');
+            expect(value).toEqual('test value');
+            expect(parameters).toContain('p1');
+            expect(parameters).toContain('p2');
+        });
+
+    });
+
     describe('for the accepted rule', function() {
 
         it ('should pass a checked checkbox', function() {

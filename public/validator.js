@@ -36,9 +36,12 @@
 
 			},
 
-			validate : function (selector, attribute, callback) {
+			validate : function (options) {
 
-				var allValid = true;
+				var selector = options.selector,
+					attribute = options.validationAttribute,
+					callback = options.callback,
+					allValid = true;
 
 				$(selector).each(function () {
 
@@ -46,6 +49,7 @@
 						name  = $(this).attr("name"),
 						value = $(this).val(),
 						rules = [],
+						method = null,
 						valid = true;
 
 					if (!validation_rules) {
@@ -60,8 +64,10 @@
 							return true;
 						}
 
-						valid = valid && (validations[rule.method] ?
-								validations[rule.method](name, value, rule.params) :
+						method = validations[rule.method] || options[rule.method];
+
+						valid = valid && (method ?
+								method.apply(validations, [name, value, rule.params]) :
 								false);
 
 					});
@@ -330,7 +336,12 @@
 
 					$(this).on(options.events, function (evt) {
 
-						var valid = validations.validate(options.selector || this, options.validationAttribute, options.callback);
+						var valid;
+
+						options.selector = options.selector || this;
+
+						valid = validations.validate(options);
+
 						if ((!valid && options.preventDefaultIfInvalid) || options.preventDefault) {
 							evt.preventDefault();
 						}
