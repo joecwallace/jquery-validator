@@ -131,8 +131,8 @@
 
 			validate_required : function (attribute, value) {
 
-				if ($("[name=" + attribute + "]").first().is(':radio')) {
-					return $("[name=" + attribute + "]:checked").val() !== undefined;
+				if ($("[name=\"" + attribute + "\"]").first().is(':radio')) {
+					return $("[name=\"" + attribute + "\"]:checked").val() !== undefined;
 				}
 
 				return this.validate_match(attribute, value, /[^\s]+/);
@@ -141,7 +141,7 @@
 
 			validate_required_with : function (attribute, value, parameters) {
 
-				if (this.validate_required(parameters[0], $("[name=" + parameters[0] + "]").val())) {
+				if (this.validate_required(parameters[0], $("[name=\"" + parameters[0] + "\"]").val())) {
 					return this.validate_required(attribute, value);
 				}
 
@@ -158,19 +158,19 @@
 			validate_accepted : function (attribute, value) {
 
 				return this.validate_match(attribute, value, /^(yes|1)$/) ||
-					$("[name=" + attribute + "]").is(":checked");
+					$("[name=\"" + attribute + "\"]").is(":checked");
 
 			},
 
 			validate_same : function (attribute, value, parameters) {
 
-				return value === $("[name=" + parameters[0] + "]").val();
+				return value === $("[name=\"" + parameters[0] + "\"]").val();
 
 			},
 
 			validate_different : function (attribute, value, parameters) {
 
-				return value !== $("[name=" + parameters[0] + "]").val();
+				return value !== $("[name=\"" + parameters[0] + "\"]").val();
 
 			},
 
