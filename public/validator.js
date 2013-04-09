@@ -52,7 +52,7 @@
 						method = null,
 						valid = true;
 
-					if (!validation_rules) {
+					if (!validation_rules || !name) {
 						return true;
 					}
 
