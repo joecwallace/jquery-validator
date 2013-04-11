@@ -10,10 +10,10 @@ describe('Validator', function() {
 
     var testForm, testFormHtml,
         checkboxInput, textInput, confirmationInput,
-        passwordInput, radioInput, textareaInput,
+        passwordInput, radioInput, textareaInput, multiSelectInput,
         defaultOptions = {
             events: 'submit',
-            selector: 'input, textarea',
+            selector: 'input, select, textarea',
             preventDefault: true
         };
 
@@ -26,6 +26,7 @@ describe('Validator', function() {
         confirmationInput = $('[name=textInput_confirmation]', testForm);
         passwordInput = $('[name=passwordInput]', testForm);
         radioInput = $('[name=radioInput]', testForm);
+        multiSelectInput = $('[name=multiSelectInput]', testForm);
         textareaInput = $('[name=textareaInput]', testForm);
     });
 
@@ -2144,6 +2145,29 @@ describe('Validator', function() {
 
             runs(function() {
                 expect(formValid).toEqual(false);
+            });
+
+        });
+
+        it ('should pass for multiple selects', function() {
+
+            var formValid = null;
+
+            multiSelectInput.data('validations', 'required');
+            multiSelectInput.val(['1', '3']);
+
+            testForm.validator($.extend({
+                done: function(v) {
+                    formValid = v;
+                }
+            }, defaultOptions)).submit();
+
+            waitsFor(function() {
+                return formValid !== null;
+            });
+
+            runs(function() {
+                expect(formValid).toEqual(true);
             });
 
         });

@@ -112,14 +112,25 @@
 					parameters = [ parameters ];
 				}
 
-				var re = parameters[0];
+				if (!(value instanceof Array)) {
+					value = [ value ];
+				}
+
+				var i = 0,
+					re = parameters[0];
 
 				if (!(re instanceof RegExp)) {
 					re = re.replace(/\/?([^\/]*)\/?/, "$1");
 					re = new RegExp(re);
 				}
 
-				return value.match(re) !== null;
+				for (i = 0; i < value.length; i++) {
+					if (value[i].match(re) !== null) {
+						return true;
+					}
+				}
+
+				return false;
 
 			},
 
