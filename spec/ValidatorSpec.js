@@ -2171,6 +2171,28 @@ describe('Validator', function() {
             });
 
         });
+
+        it ('should fail for multiple selects with no selection', function() {
+
+            var formValid = null;
+
+            multiSelectInput.data('validations', 'required');
+
+            testForm.validator($.extend({
+                done: function(v) {
+                    formValid = v;
+                }
+            }, defaultOptions)).submit();
+
+            waitsFor(function() {
+                return formValid !== null;
+            });
+
+            runs(function() {
+                expect(formValid).toEqual(false);
+            });
+
+        });
     });
 
     describe('for the required_with rule', function() {

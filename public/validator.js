@@ -125,7 +125,7 @@
 				}
 
 				for (i = 0; i < value.length; i++) {
-					if (value[i].match(re) !== null) {
+					if (value[i] !== null && value[i].match(re) !== null) {
 						return true;
 					}
 				}
