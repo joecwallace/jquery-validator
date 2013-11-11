@@ -171,7 +171,7 @@ $(document).ready(function() {
     $('input').validator({
       events   : 'blur change',
       callback : function( elem, valid ) {
-          if ( valid ) {
+          if ( ! valid ) {
               $( elem ).addClass( 'error' );
           }
           else {
