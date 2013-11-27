@@ -27,7 +27,8 @@
 					rule = value.split(":");
 					validations.push({
 						method : "validate_" + rule[0],
-						params : rule[1] ? rule[1].split(",") : []
+						params : rule[1] ? rule[1].split(",") : [],
+						original: value
 					});
 
 				});
@@ -49,6 +50,7 @@
 						name  = $(this).attr("name"),
 						value = $(this).val(),
 						rules = [],
+						brokenRules = [],
 						method = null,
 						valid = true;
 
@@ -60,19 +62,27 @@
 
 					$.each(rules, function (idx, rule) {
 
+						var thisValid;
+
 						if (!validations.validatable(rule, name, value)) {
 							return true;
 						}
 
 						method = validations[rule.method] || options[rule.method];
 
-						valid = valid && (method ?
-								method.apply(validations, [name, value, rule.params]) :
-								false);
+						thisValid = method ?
+							method.apply(validations, [name, value, rule.params]) :
+							false;
+
+						valid = valid && thisValid;
+
+						if (!thisValid) {
+							brokenRules.push(rule.original);
+						}
 
 					});
 
-					callback(this, valid);
+					callback(this, valid, brokenRules.join('|'));
 
 					allValid = allValid && valid;
 

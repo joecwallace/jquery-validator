@@ -191,6 +191,35 @@ describe('Validator', function() {
 
     });
 
+    it ('should return the failed validation rules', function() {
+
+        var elem = null,
+            valid = null,
+            rules = null;
+
+        textInput.data('validations', 'required|email|min:20').val('test value');
+
+        testForm.validator($.extend({
+            callback: function(e, v, r) {
+                elem = e;
+                valid = v;
+                rules = r;
+                console.log(arguments);
+            }
+        }, defaultOptions)).submit();
+
+        waitsFor(function() {
+            return valid !== null;
+        });
+
+        runs(function() {
+            expect($(elem).attr('name')).toEqual(textInput.attr('name'));
+            expect(valid).toEqual(false);
+            expect(rules).toEqual('email|min:20');
+        });
+
+    });
+
     describe('for the accepted rule', function() {
 
         it ('should pass a checked checkbox', function() {
