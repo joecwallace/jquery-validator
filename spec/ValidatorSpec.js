@@ -204,7 +204,6 @@ describe('Validator', function() {
                 elem = e;
                 valid = v;
                 rules = r;
-                console.log(arguments);
             }
         }, defaultOptions)).submit();
 
@@ -216,6 +215,31 @@ describe('Validator', function() {
             expect($(elem).attr('name')).toEqual(textInput.attr('name'));
             expect(valid).toEqual(false);
             expect(rules).toEqual('email|min:20');
+        });
+
+    });
+
+    it ('should independently evaluate multiple selected items', function() {
+
+        var elems = [];
+
+        textInput.data('validations', 'required|max:10').val('9');
+        confirmationInput.data('validations', 'required|min:20').val('20');
+
+        testForm.find('input[type=text]').validator({
+            events: 'blur',
+            selector: null,
+            callback: function(e) {
+                elems.push(e);
+            }
+        }).blur();
+
+        waitsFor(function() {
+            return elems.length == 2;
+        });
+
+        runs(function() {
+            expect(elems[0].name).toNotEqual(elems[1].name);
         });
 
     });

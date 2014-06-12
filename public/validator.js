@@ -346,6 +346,8 @@
 		methods = {
 			make : function (options) {
 
+				var selector = options.selector;
+
 				if (options === 'undefined') {
 					$.error('jQuery' + namespace + ' may not be intialized without options.');
 				}
@@ -359,7 +361,7 @@
 
 						var valid;
 
-						options.selector = options.selector || this;
+						options.selector = selector || this;
 
 						valid = validations.validate(options);
 
