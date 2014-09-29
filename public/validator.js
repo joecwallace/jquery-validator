@@ -178,8 +178,11 @@
 
 			validate_accepted : function (attribute, value) {
 
-				return this.validate_match(attribute, value, /^(yes|1)$/) ||
-					$("[name=\"" + attribute + "\"]").is(":checked");
+				var input = $("[name=\"" + attribute + "\"]");
+
+				return input.is(":checkbox") ?
+					input.is(":checked") :
+					this.validate_match(attribute, value, /^(yes|1)$/);
 
 			},
 
