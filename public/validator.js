@@ -224,13 +224,13 @@
 
 			},
 
-            validate_digits_between : function (attribute, value, parameters) {
+                        validate_digits_between : function (attribute, value, parameters) {
 
-                var size = value.length;
+                        var size = value.length;
 
-                return size >= parseInt(parameters[0]) && size <= parseInt(parameters[1]);
+                        return size >= parseInt(parameters[0]) && size <= parseInt(parameters[1]);
 
-            },
+                        },
 
 			validate_min : function (attribute, value, parameters) {
 
