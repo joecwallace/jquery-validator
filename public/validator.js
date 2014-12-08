@@ -224,6 +224,14 @@
 
 			},
 
+                        validate_digits_between : function (attribute, value, parameters) {
+
+                                var size = value.length;
+
+                                return size >= parseInt(parameters[0]) && size <= parseInt(parameters[1]);
+
+                        },
+
 			validate_min : function (attribute, value, parameters) {
 
 				return this.size(attribute, value) >= parseFloat(parameters[0]);
