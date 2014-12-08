@@ -1156,6 +1156,165 @@ describe('Validator', function() {
 
     });
 
+    describe('for the digits between rule', function() {
+
+        it('should pass for a number of appropriate length', function() {
+
+            var elem = null,
+                elemValid = null,
+                formValid = null;
+
+            textInput.data('validations', 'digits_between:2,4')
+                .val('123');
+
+            testForm.validator($.extend({
+                callback: function(e, v) {
+                    elem = e;
+                    elemValid = v;
+                },
+                done: function(v) {
+                    formValid = v;
+                }
+            }, defaultOptions)).submit();
+
+            waitsFor(function() {
+                return elem !== null &&
+                    formValid !== null;
+            });
+
+            runs(function() {
+                expect($(elem).attr('name')).toEqual(textInput.attr('name'));
+                expect(elemValid).toEqual(true);
+                expect(formValid).toEqual(true);
+            });
+        });
+
+        it('should pass for a number with the same length as the lower limit', function() {
+
+            var elem = null,
+                elemValid = null,
+                formValid = null;
+
+            textInput.data('validations', 'digits_between:2,4')
+                .val('12');
+
+            testForm.validator($.extend({
+                callback: function(e, v) {
+                    elem = e;
+                    elemValid = v;
+                },
+                done: function(v) {
+                    formValid = v;
+                }
+            }, defaultOptions)).submit();
+
+            waitsFor(function() {
+                return elem !== null &&
+                    formValid !== null;
+            });
+
+            runs(function() {
+                expect($(elem).attr('name')).toEqual(textInput.attr('name'));
+                expect(elemValid).toEqual(true);
+                expect(formValid).toEqual(true);
+            });
+        });
+
+        it('should pass for a number with the same length as the upper limit', function() {
+
+            var elem = null,
+                elemValid = null,
+                formValid = null;
+
+            textInput.data('validations', 'digits_between:2,4')
+                .val('1234');
+
+            testForm.validator($.extend({
+                callback: function(e, v) {
+                    elem = e;
+                    elemValid = v;
+                },
+                done: function(v) {
+                    formValid = v;
+                }
+            }, defaultOptions)).submit();
+
+            waitsFor(function() {
+                return elem !== null &&
+                    formValid !== null;
+            });
+
+            runs(function() {
+                expect($(elem).attr('name')).toEqual(textInput.attr('name'));
+                expect(elemValid).toEqual(true);
+                expect(formValid).toEqual(true);
+            });
+        });
+
+        it('should fail for a number shorter than the lower limit', function() {
+
+            var elem = null,
+                elemValid = null,
+                formValid = null;
+
+            textInput.data('validations', 'digits_between:2,4')
+                .val('1');
+
+            testForm.validator($.extend({
+                callback: function(e, v) {
+                    elem = e;
+                    elemValid = v;
+                },
+                done: function(v) {
+                    formValid = v;
+                }
+            }, defaultOptions)).submit();
+
+            waitsFor(function() {
+                return elem !== null &&
+                    formValid !== null;
+            });
+
+            runs(function() {
+                expect($(elem).attr('name')).toEqual(textInput.attr('name'));
+                expect(elemValid).toEqual(false);
+                expect(formValid).toEqual(false);
+            });
+        });
+
+        it('should fail for a number longer than the upper limit', function() {
+
+            var elem = null,
+                elemValid = null,
+                formValid = null;
+
+            textInput.data('validations', 'digits_between:2,4')
+                .val('12345');
+
+            testForm.validator($.extend({
+                callback: function(e, v) {
+                    elem = e;
+                    elemValid = v;
+                },
+                done: function(v) {
+                    formValid = v;
+                }
+            }, defaultOptions)).submit();
+
+            waitsFor(function() {
+                return elem !== null &&
+                    formValid !== null;
+            });
+
+            runs(function() {
+                expect($(elem).attr('name')).toEqual(textInput.attr('name'));
+                expect(elemValid).toEqual(false);
+                expect(formValid).toEqual(false);
+            });
+        });
+
+    });
+
     describe('for the email rule', function() {
 
         it ('should pass for a valid email address', function() {
