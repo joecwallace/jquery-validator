@@ -27,7 +27,7 @@
 					rule = value.split(":");
 					validations.push({
 						method : "validate_" + rule[0],
-						params : rule[1] ? (rule[0] !== 'regex' ? rule[1].split(",") : rule[1]) : [],
+						params : rule[1] ? (rule[0].toLowerCase() !== 'regex' ? rule[1].split(",") : rule[1]) : [],
 						original: value
 					});
 

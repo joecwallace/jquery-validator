@@ -2191,8 +2191,8 @@ describe('Validator', function() {
                 elemValid = null,
                 formValid = null;
 
-            textInput.data('validations', 'regex:\\w{4}')
-                .val('asdf');
+            textInput.data('validations', 'regex:[,asdf]{5}\\w{4}')
+                .val('asdf,fdsa');
 
             testForm.validator($.extend({
                 callback: function(e, v) {
