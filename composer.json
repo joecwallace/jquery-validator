@@ -1,0 +1,29 @@
+{
+    "name": "joecwallace/jquery-validator",
+    "description": "Easily validate forms and/or inputs client-side with Laravel-style validation rules.",
+    "authors": [
+        {
+            "name": "Joe C. Wallace, III",
+            "email": "joe.c.wallace@gmail.com"
+        }
+    ],
+    "require": {
+        "php": ">=5.4.0"
+    },
+    "require-dev": {
+        "illuminate/html": "~4.2",
+        "illuminate/routing": "~4.2",
+        "illuminate/support": "~4.2",
+        "phpspec/phpspec": "~2.1"
+    },
+    "suggest": {
+        "illuminate/support": "~4.2",
+        "illuminate/html": "~4.2"
+    },
+    "autoload": {
+        "psr-4": {
+            "JqueryValidator\\": "src/"
+        }
+    },
+    "minimum-stability": "stable"
+}

@@ -1,0 +1,4 @@
+suites:
+  jqv_suite:
+    namespace: JqueryValidator
+    psr4_prefix: JqueryValidator
